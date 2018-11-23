@@ -1,0 +1,19 @@
+PytorchNNWithBackProp_ReLUSoftMax_CrEntropy.py:
+
+This attempt is to build a simple neural network using PyTorch framework to 
+classify images. This is an attempt to compare the results achieved with 
+'SimpleNNWtihBackProp.py' and 'PytorchNNWithBackProp_Sigmoid_L1Loss.py'.
+
+The description of the network topology can be found in PytorchNNWithBackProp_Sigmoid_L1Loss
+
+The difference between PytorchNNWithBackProp_Sigmoid_L1Loss and this is the
+activation and loss function. It uses ReLU activation and cross entropy loss
+instead of sigmoid and L1.
+
+With learning rate as 0.1, momentum as 0.9, in 20 epochs, the loss is 1.4531 and the
+% of failure is 50.5% (accuracy of training is 49.5%). With the test data the accuracy is 36%
+(% of failure is 64%).
+
+This is an improvement in right direction - which indicates the fact that ReLU & log softmax
+is a better classifier than sigmoid. sigmoid could be a better classifier for binary
+classification.

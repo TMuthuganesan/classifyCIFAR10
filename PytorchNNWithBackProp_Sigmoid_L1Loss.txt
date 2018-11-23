@@ -1,0 +1,44 @@
+PytorchNNWithBackProp_Sigmoid_L1Loss.py:
+
+This attempt is to build a simple neural network using PyTorch framework to 
+classify images. This is an attempt to compare the results achieved with 
+'SimpleNNWtihBackProp.py'.
+
+This also implements a 3 layer neural network, with 1024 input nodes (32x32
+gray image input), 32 nodes in hidden layer and 10 nodes in the output layer.
+The transfer function used at each layer is sigmoid transfer.
+The number of nodes and the activation transfer function are defined in 
+class Neuron. Torchvision library methods are used to read the datasets.
+Torchvision also provides methods to transform the input while dataset is
+loaded like converting into grayscale, normalizing etc. More information
+on loading data and normalizing can be found at
+https://stackoverflow.com/questions/53332663/torchvision-0-2-1-transforms-normalize-does-not-work-as-expected
+
+The steps followed in this implementation is very simple due to the use of
+framework,
+  -> Load training and test dataset
+  -> Create an object of class Neuron
+  -> Define the optimizer and loss function. Here Stochastic Gradient Descent
+  is used optimizer and L1 distance is used as loss function.
+  -> For each batch of data, read the training data corresponding to the batch
+  -> Convert the data and labels in PyTorch variables so that autograd can apply
+  -> Reshape the 32x32 image into a vector
+  -> zero the gradient
+  -> When the object of class Neuron is called, it calls the forward function defined
+  in the class, which performs the feed forward operation for the network.
+  -> Calculate the loss using the defined criteria
+  -> Perform back propagation by calling loss.backward()
+  -> Gradient descent is performed by calling optimizer.step()
+  -> Repeat the forward and backward pass for the entire batch
+  -> Print the batch results & and repeat the entire process for defined number
+  of epochs.
+  
+With a learning rate of 0.1, momentum of 0.9, after 20 epochs, the loss is 
+0.1001 and the % of failure is 86%. With the test data the accuracy is 17%
+(% of failure is 83%).
+With different learning rates, as well as increasing the epochs does not help.
+% of failures does not decrease below 81%.
+
+From the results of simple NN code as well as this, it seems like achieving 
+better results with sigmoid transfer and L1 loss is difficult. The next 
+attempt will be to try other suitable method.

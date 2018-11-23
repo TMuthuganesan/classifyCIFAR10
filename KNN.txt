@@ -1,0 +1,22 @@
+knn.py:
+
+The attempt is to experiment with KNN for image classification.
+But KNN itself is not the best alogorithm to classify images.
+ 
+This code allows to read the dataset, provides various functions to 
+	-> Classify using KNN with Manhattan distance measure with K=5
+	-> Change configuration to classify with Euclidean distance with K=5
+	-> Parameter K can be configured too
+	-> Use gray or color images for classification
+	-> Configure the total number of test data used for classification
+	-> After classifying, quantify the results and print the pass percentage
+
+The results are not encouraging, as KNN is not the best fit for the job. There
+can be an image of cat with frontal pose and another with side pose. The
+distance measure used, can be so high to classify this as some other image. It
+can be improved using feature selection and then using KNN for classification.
+But there are many improved deep learning methods which can classify images better.
+Only 1000 images were used to train. With this the accuracy with color images was 21%
+and with gray images 16%.
+
+Please refer to this paper on CIFAR too - https://www.cs.toronto.edu/~kriz/learning-features-2009-TR.pdf

@@ -1,0 +1,59 @@
+PytorchConvNetGray.py:
+
+This attempt is to build a simple convolutional neural network (CNN) to classify
+CIFAR10 images and achieve better accuracies than the KNN, simple back propagation
+NN, back propagation NN with PyTorch explained here.
+
+It started with a simple architecture of having a conv layer, followed by ReLU, again
+conv+ReLU, then a max pooling layer, followed by 3 fully connected layers.
+  -> First conv layer uses 16 kernels of 5x5 with single stride + ReLU activation
+  -> Second conv layer uses 8 kernels of 5x5 with single stride + ReLU activation
+  -> Next max pooling layer has a stride 2, to drop out 3/4th of the size
+  -> First fully connected layer has 128 outputs
+  -> Second fully connected layer has 64, and third has 10
+  -> All layers have ReLU activation, except the last one which is log softmax
+  -> Optimizer used is Stochastic Gradient Descent and loss function is a cross entropy
+  -> On top of this basic structure, various tweaks were made to study the performance
+      * Increase the 1st conv layer kernel to 32 and 2nd to 16
+      * Try forcing Xavier initialization of all parameters
+      * Try batch normalization at each layer output
+      * Try Reduce Learning Rate on Plateau scheduler
+      * Try dropout with 0.5 after 2nd Conv layer
+
+      
+The results are given as a table below, all used a learning rate of 0.01, momentum of 0.9,
+20 epochs, ad used LR on Plateau scheduler,
+
+----------------------------------------------------
+| Network Config | Training | Training  |  Test    |
+|                |   Loss   | Accuracy  | Accuracy |
+----------------------------------------------------
+|   1. Basic     |   0.61   |     77%   |   44%    |
+----------------------------------------------------
+|   2. Large     |   0.54   |    83.5%  |   54%    |
+|   kernels      |          |           |          |
+----------------------------------------------------
+| 3. Xavier Init |   0.61   |    79%    |   54%    |
+----------------------------------------------------
+| 4. Batch Norm  |   0.37   |    88%    |   42%    |
+----------------------------------------------------
+| 5. Dropout     |   1.31   |    56%    |   51%    |
+----------------------------------------------------
+
+Interesting point to note, is that in all cases, training accuracy is very high,
+while test accuracy drops significantly. This is probably indicating that the 
+training is overfitting to the training dataset. With the drop out being 
+introduced with Xavier initialization and Batch Normalization, the training
+accuracy almost matches test accuracy. Drop out is kind of regularization,
+which drops weights which do not contribute.
+
+But, overall, it looks like 50% is the accuracy of a simple CNN of small size
+that can be trained in CPU.
+
+Another thing which is not tried here, is the per-parameter & per-layer
+parameter optimization.
+
+Some leaders in the leaderboard of the CIFAR classification are at 
+http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html
+
+  

@@ -1,0 +1,65 @@
+SimpleNNWtihBackProp.py:
+
+This attempt is to build a simple neural network from scratch without using
+any frameworks to classify images. This does not make use of convolution
+filters too. This is a 3 layer neural network. The CIFAR images are converted
+into grayscale images with one channel, instead of RGB. 
+  -> All variable related to the network are formed as a list of dictionary of
+  list in numpy. 
+  -> The outer bound list denotes each layer. Each of this list
+  (layer) has variables related to this layer as dictionary item - inputs,
+  weights, scaled inputs and delta used for back propagation. Each dictionary
+  value shall be another list for the corresponding vector item - for example
+  there are many weights related to each layer and each input, these are 
+  vectorized and stored as list against the corresponding dictionary key.
+  -> Input layer has 1024 nodes (for each 32x32 image).
+  -> Hidden layer has 32 nodes and output layer has 10 nodes as there are 10 classes
+  -> Input of layer0 is neuron[0]['a'], layer1 is neuron[1]['a'] and so on.
+  -> Input from the image is normalized between -1.0 and 1.0 instead of 0 to 255.
+  -> Weights from one layer to another depends on number of nodes in them.
+  -> If there are M neurons in layer0 and N neurons in layer1, then W0 will be of 
+  size N x (M+1). Here there are 1024 neurons in layer0 and 32 neurons in layer1,
+  Hence W0 will be of size 32x1025. +1 is for bias neuron. Similar calculation for
+  layer1 to layer2 weights.
+  -> Weights of layer0 to 1 is stored in neuron[0]['w'] & layer1 to 2 is neuron[1]['w']
+  -> The weights are randomly initialized between -1.0 and 1.0.
+  -> The basic building blocks of the algorithm are implemented as functions.
+  -> The 'feedForward' function implements the feed forward logic. It computes
+  'sigmoid(input*weights)'.
+  -> Sigmoid is implemented as 'transfer' function.
+  -> Error at the output layer is predicted as the difference between expected
+  output and actual output. Expected output is one hot encoded for this, as the 
+  labels are indicated as the index number.
+  -> Delta is calculated as error * sigmoidDerivative (output)
+  -> Delta of output layer is stored in neuron[2]['d'] & hidden layer at neuron[1]['d']
+  -> After delta calculation, the weights are updated as 
+  New weight = old weight + learning rate * delta * input(that caused the error)
+  -> After the weight update, feed forward is performed with new weights.
+  -> This feed forward and backward continues many number of times determined
+  by the number of EPOCHS and batches. In this case there is only one data
+  used for feed forward, back propagation and weight update.
+  -> During each pass, print out the Mean Square Error and percentage of fail (pass)
+  
+In this case, after 20 Epochs (after 20 times looping through entire training dataset),
+he % of failure is at 62% with LR=0.1. This can be validated by only doing a feed forward pass of
+test data and calculating the % of failure. This piece of code is not available, as it
+attempts to build a network. Similar data can be found in other pyTorch based codes in the
+same repository.
+
+Challenges: 
+1. The loss seems to plateau after a few data. 
+  a. Log softmax can be tried as transfer function for the output layer, as sigmoid transfers
+  mostly into 0 or 1 (__/^^) but softmax will give probability for each class.
+  b. Try to modify the learning rate as exponential decay function  so that it reduces
+  as the training progresses.
+2. This is not known to me yet - If we need to do batch processing, we pass a group of
+input data, keep collating the error and arrives at a loss for all this data. When
+back propagation happens, it uses the input that caused the error. In this case,
+group of data had caused the error. So which of the data be used as input in back prop?
+I believe that this will be helpful, as the loss function is indicative of a group, it
+generalizes the data more than updating weight for a specific data. If anyone knows how
+to do this please let me know at thiagucomp@gmail.com
+
+References:
+1. https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/
+2. https://www.analyticsvidhya.com/blog/2017/05/neural-network-from-scratch-in-python-and-r/
