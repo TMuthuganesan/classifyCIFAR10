@@ -11,7 +11,7 @@ import torchvision as tv
 import numpy as np
 
 USE_GRAYIMG       = True
-DATADIR           = 'D:\\general\\ML_DL\\DLCourse_VipulVaibhav\\datasets\\CIFAR'
+DATADIR           = '../../datasets/CIFAR'
 NUM_CLASSES       = 10 #Num of classes in classification problem - its 10 in CIFAR10
 LOG_INTERVAL      = 10
 IMG_W             = 32
@@ -44,10 +44,10 @@ def rdDataSet(dataDir,train=True):
   dataLoader      = data.DataLoader(dataSet, batch_size=BATCHSIZE, shuffle=False, num_workers=2)
   return dataLoader
 
+#Trail 1 Network - Train Accuracy=44%, Test Accuracy=50.5%
 class Neuron(nn.Module):
   def __init__(self):
     super(Neuron, self).__init__()
-    #Trail 1 Network
     self.conv1      = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=5,stride=1,padding=0)
     nn.init.xavier_uniform_(self.conv1.weight)
     self.conv2      = nn.Conv2d(in_channels=16, out_channels=8, kernel_size=5,stride=1,padding=0)
@@ -63,26 +63,83 @@ class Neuron(nn.Module):
     self.fc2_bn     = nn.BatchNorm1d(64)
     self.fc3        = nn.Linear(64,10)
     nn.init.xavier_uniform_(self.fc3.weight)
-    
-    #Trial 2 Network - Reach error of 0.54 and Fail% of 16.5% after 20 epochs with LR=0.1, momentum = 0.9
-    #Test dataset generates failure of 46.07%
-    #self.conv1      = nn.Conv2d(in_channels=1, out_channels=32, kernel_size=5,stride=1,padding=0)
-    #self.conv2      = nn.Conv2d(in_channels=32, out_channels=16, kernel_size=5,stride=1,padding=0)
-    #self.pool       = nn.MaxPool2d(2, 2)
-    #self.fc1        = nn.Linear(16 * 12 * 12, 128)
-    #self.fc2        = nn.Linear(128, 64)
-    #self.fc3        = nn.Linear(64,10)
 
   def forward(self,x):
-    x = F.relu(self.conv1(x)) #32x32 image to 32 28x28 images through 16 filter kernels
-    x = F.relu(self.conv2_drop(self.conv2_bn(self.conv2(x)))) #32 28x28 images to 16 24x24 images
-    x = self.pool(x)          #16 24x24 image to 8 12x12 by downsampling with max value per each 2x2 block
+    x = F.relu(self.conv1(x))
+    x = F.relu(self.conv2_drop(self.conv2_bn(self.conv2(x))))
+    x = self.pool(x)
     x = x.view(-1, 8 * 12 * 12)
     x = F.relu(self.fc1_bn(self.fc1(x)))
     x = F.relu(self.fc2_bn(self.fc2(x)))
     x = F.relu(self.fc3(x))
     return F.log_softmax(x)
+   
+'''
+#Trial 2 Network -- Deeper n/w having many conv layers - train acc=57%, Test acc=57.1%
+class Neuron(nn.Module):
+  def __init__(self):
+    super(Neuron, self).__init__() 
+    self.conv1      = nn.Conv2d(in_channels=1, out_channels=32, kernel_size=5,stride=1,padding=0)
+    nn.init.xavier_uniform_(self.conv1.weight)
+    self.conv1_bn   = nn.BatchNorm2d(32)
+    self.conv2      = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=5,stride=1,padding=0)
+    nn.init.xavier_uniform_(self.conv2.weight)
+    self.conv2_bn   = nn.BatchNorm2d(32)
+    self.conv2_drop = nn.Dropout2d()
+    self.pool       = nn.MaxPool2d(2, 2)
+    self.conv3      = nn.Conv2d(in_channels=32, out_channels=16, kernel_size=3,stride=1,padding=0)
+    nn.init.xavier_uniform_(self.conv3.weight)
+    self.conv3_bn   = nn.BatchNorm2d(16)
+    self.conv4      = nn.Conv2d(in_channels=16, out_channels=8, kernel_size=3,stride=1,padding=0)
+    nn.init.xavier_uniform_(self.conv4.weight)
+    self.conv4_bn   = nn.BatchNorm2d(8)
+    self.conv4_drop = nn.Dropout2d()
+    self.fc1        = nn.Linear(8 * 8 * 8, 128)
+    nn.init.xavier_uniform_(self.fc1.weight)
+    self.fc1_bn     = nn.BatchNorm1d(128)
+    self.fc2        = nn.Linear(128, 64)
+    nn.init.xavier_uniform_(self.fc2.weight)
+    self.fc2_bn     = nn.BatchNorm1d(64)
+    self.fc3        = nn.Linear(64,10)
+    nn.init.xavier_uniform_(self.fc3.weight)
 
+  def forward(self,x):
+    x = F.relu(self.conv1_bn(self.conv1(x)))
+    x = F.relu(self.conv2_drop(self.conv2_bn(self.conv2(x))))
+    x = self.pool(x)
+    x = F.relu(self.conv3_bn(self.conv3(x)))
+    x = F.relu(self.conv4_drop(self.conv4_bn(self.conv4(x))))
+    x = x.view(-1, 8 * 8 * 8)
+    x = F.relu(self.fc1_bn(self.fc1(x)))
+    x = F.relu(self.fc2_bn(self.fc2(x)))
+    x = F.relu(self.fc3(x))
+    return F.log_softmax(x)
+'''
+    
+'''
+# Traile 3 - Wide network with many kernel in each layer
+class Neuron(nn.Module):  #So far the best results, but while test data is computed, it crashes with not enough memory
+  #Training results - Accuracy=90.5%
+  def __init__(self):
+    super(Neuron, self).__init__()
+    self.conv1      = nn.Conv2d(in_channels=1, out_channels=256, kernel_size=5,stride=1,padding=0)
+    self.conv2      = nn.Conv2d(in_channels=256, out_channels=128, kernel_size=5,stride=1,padding=0)
+    self.conv2_drop = nn.Dropout2d()
+    self.pool       = nn.MaxPool2d(2, 2)
+    self.fc1        = nn.Linear(128 * 12 * 12, 128)
+    self.fc2        = nn.Linear(128, 64)
+    self.fc3        = nn.Linear(64,10)
+
+  def forward(self,x):
+    x = F.relu(self.conv1(x))
+    x = F.relu(self.conv2_drop(self.conv2(x)))
+    x = self.pool(x)
+    x = x.view(-1, 128 * 12 * 12)
+    x = F.relu(self.fc1(x))
+    x = F.relu(self.fc2(x))
+    x = F.relu(self.fc3(x))
+    return F.log_softmax(x)
+'''
 if __name__ == '__main__':
   trainLoader     = rdDataSet(DATADIR,train=True) 
   testLoader      = rdDataSet(DATADIR,train=False)

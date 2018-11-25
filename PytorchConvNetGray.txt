@@ -56,4 +56,23 @@ parameter optimization.
 Some leaders in the leaderboard of the CIFAR classification are at 
 http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html
 
-  
+New Update - 25 Nov 2018:
+The code is little restructured to have 3 different architectures - The first one is
+the ones discussed above. 
+
+Second one is an experiment tried later - This used a deeper network, with 2 conv
+layers, followed by dropout & max pooling, again 2 conv layers, connected to 3 fully
+connected layers. This achieved almost the similar result. The training accuracy was
+43% and test accuracy was 46.9%. The good thing was test accuracy matched with training.
+But accuracy did not improve any better.
+
+Third experiment used a wider network - this is to use many kernels per each layer.
+The first one used 256 kernels of 5x5, conv2 used 128 kernels of 5x5, followed by
+dropout, max pooling, then 3 fully connected layers with 128, 64 and 10 nodes. 
+Amazingly, the training accuracy reach 90.5% after 20 epochs with LR=0.01 and momentum
+as 0.9. But while running the test data, the machine crashed with not enough memory.
+The training phase ran for about 11 hours, against earlier architectures above which 
+ran for about 30mins to 1 hour max. 
+
+This can be tried with GPU, at faster rate.
+
