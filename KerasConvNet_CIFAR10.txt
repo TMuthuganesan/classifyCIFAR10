@@ -1,0 +1,36 @@
+This approach uses Kera to implement CNN to classify CIFAR10 dataset.
+The implementation is at KerasConvNet_CIFAR10.py
+
+A small background before the explanation of implementation. I had experimented
+with lot of approaches before to classify CIFAR10. All attempts including the one
+done with PyTorch (please refer PytorchConvNetGray.txt) resulted in accuracies
+close to 50% marks and not more. I wanted to write a network with large number
+of input kernels - the idea being, with many kernels, each kernel being trained
+to look at specific feature, there shall be many features which will be learned
+from the input image and there is a larger chance of classifying better. But the
+bottleneck to do this was my computing resource.
+
+I built a CNN with this architecture - 
+The first one used 256 kernels of 5x5, conv2 used 128 kernels of 5x5, followed by
+dropout, max pooling, then 3 fully connected layers with 128, 64 and 10 nodes. 
+Amazingly, the training accuracy reached 90.5% after 20 epochs with LR=0.01 and momentum
+as 0.9. But while running the test data, the machine crashed with not enough memory.
+The training phase ran for about 11 hours.
+
+Though the accuracy was convincing, 11 hours to train before crashing was not and
+encouraging sign. 
+
+I decided to run this code in google colab. But got to know that PyTorch does not
+come installed and we need to install. This install is not for ever, we need to 
+do this frequently. So, I wrote the same implementation in Keras (Tensorflow is
+installed by default with google colab). For running this code in colab, it needs
+to be a ipython notebook (ipynb). Same code can be copied to ipynb on the fly by
+creating a new python notebook in colab. Alternatively, it can be created locally,
+uploaded ti github. Google colab can pick up code directly from github too, and 
+save it back. The dataset is placed in my google drive, which can be mounted to
+google colab (refer to the code) and directly accessed.
+
+This implementation ran only for 2 hours for 20 epochs and the training loss was 
+0.1117, accuracy was 95.66%. The test accuracy was 93.9%. The best so far in any 
+experiment list this is repo. I am confident that lesser number of training epochs
+are sufficient to achieve this result.

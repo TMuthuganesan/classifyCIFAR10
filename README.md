@@ -17,6 +17,13 @@ Unit) and cross entropy loss. This code is implemented in PytorchNNWithBackProp_
 simple convnet which could be run on my not so powerful CPU to classify images.
 This code is available at PytorchConvNetGray.py
 
+6. As the results of above experiments were not even close the benchmarks, I
+decided to increase the size of the network, with which it became difficult
+to train in my CPU, and there were difficulties in moving to cloud with 
+PyTorch. Hence an experiment with Keras was done. The implementation is 
+available at KerasConvNet_CIFAR10.py
+
+
 Benckmarks:
 Some benchmark results with corresponding papers are available at - http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html
 
